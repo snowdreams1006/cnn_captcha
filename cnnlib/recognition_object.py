@@ -7,7 +7,8 @@ for i in range(10):
     t = R.rec_image(r_img)
 简单的图片每张基本上可以达到毫秒级的识别速度
 """
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 import numpy as np
 from PIL import Image
 from cnnlib.network import CNN

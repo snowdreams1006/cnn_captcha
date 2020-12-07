@@ -5,6 +5,8 @@
 """
 import os
 import json
+import re
+import pretty_errors
 
 
 image_dir = "../sample/origin"
