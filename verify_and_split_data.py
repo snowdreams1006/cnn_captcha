@@ -8,9 +8,9 @@ from PIL import Image
 import random
 import os
 import shutil
+import re
 
-
-def verify(origin_dir, real_width, real_height, image_suffix):
+def verify(origin_dir, real_width, real_height, image_suffix,max_captcha):
     """
     校验图片大小
     :return:
@@ -31,6 +31,7 @@ def verify(origin_dir, real_width, real_height, image_suffix):
     bad_img = []
 
     # 遍历所有图片进行验证
+    regex = r"\d{4}"
     for index, img_name in enumerate(img_list):
         file_path = os.path.join(origin_dir, img_name)
         # 过滤图片不正确的后缀
@@ -39,8 +40,11 @@ def verify(origin_dir, real_width, real_height, image_suffix):
             continue
 
         # 过滤图片标签不标准的情况
+        if len(img_name.split("_")) != 2:
+            bad_img.append((index, img_name, "图片标签异常"))
+            continue
         prefix, posfix = img_name.split("_")
-        if prefix == "" or posfix == "":
+        if prefix == "" or len(prefix) != max_captcha or re.match(regex,prefix) == None or posfix == "":
             bad_img.append((index, img_name, "图片标签异常"))
             continue
 
@@ -138,10 +142,12 @@ def main():
     real_height = sample_conf["image_height"]
     # 图片后缀
     image_suffix = sample_conf["image_suffix"]
+    # 图片上的字符数量
+    max_captcha = sample_conf["max_captcha"]  
 
     for image_dir in [origin_dir, new_dir]:
         print(">>> 开始校验目录：[{}]".format(image_dir))
-        bad_images_info = verify(image_dir, real_width, real_height, image_suffix)
+        bad_images_info = verify(image_dir, real_width, real_height, image_suffix,max_captcha)
         bad_imgs = []
         for info in bad_images_info:
             bad_imgs.append(info[1])
@@ -150,3 +156,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    

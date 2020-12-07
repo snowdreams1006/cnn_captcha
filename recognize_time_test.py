@@ -22,13 +22,13 @@ def recognize_captcha(index, test_path, save_path, image_suffix):
 
     # 识别
     s = time.time()
-    url = "http://127.0.0.1:6000/b"
+    url = "http://127.0.0.1:6006/b"
     files = {'image_file': (image_file_name, BytesIO(content), 'application')}
     r = requests.post(url=url, files=files)
     e = time.time()
 
     # 测试参数
-    result_dict = json.loads(r.text)["value"]  # 响应
+    result_dict = json.loads(r.text)  # 响应
     predict_text = result_dict["value"]  # 识别结果
     whole_time_for_work = int((e - s) * 1000)
     speed_time_by_rec = result_dict["speed_time(ms)"]  # 模型识别耗时
@@ -57,7 +57,7 @@ def main():
         sample_conf = json.load(f)
 
     # 配置相关参数
-    test_file = "sample/test/0001_15430304076164024.png"  # 测试识别的图片路径
+    test_file = "sample/test/0098_16071896739628491.png"  # 测试识别的图片路径
     save_path = sample_conf["local_image_dir"]  # 保存的地址
     image_suffix = sample_conf["image_suffix"]  # 文件后缀
     for i in range(20000):

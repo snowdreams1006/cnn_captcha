@@ -31,6 +31,13 @@ model_save_dir = sample_conf["model_save_dir"]
 image_suffix = sample_conf["image_suffix"]  # 文件后缀
 use_labels_json_file = sample_conf['use_labels_json_file']
 
+if not os.path.exists(api_image_dir):
+    print("【警告】找不到目录{}，即将创建".format(api_image_dir))
+    os.makedirs(api_image_dir)
+if not os.path.exists(model_save_dir):
+    print("【警告】找不到目录{}，即将创建".format(model_save_dir))
+    os.makedirs(model_save_dir)
+
 if use_labels_json_file:
     with open("tools/labels.json", "r") as f:
         char_set = f.read().strip()
@@ -89,6 +96,6 @@ def up_image():
 if __name__ == '__main__':
     app.run(
         host='0.0.0.0',
-        port=6000,
+        port=6006,
         debug=True
     )

@@ -35,7 +35,7 @@ def recognize_captcha(remote_url, rec_times, save_path, image_suffix):
 
         # 识别
         s = time.time()
-        url = "http://127.0.0.1:6000/b"
+        url = "http://127.0.0.1:6006/b"
         files = {'image_file': (image_file_name, BytesIO(response.content), 'application')}
         r = requests.post(url=url, files=files)
         e = time.time()
@@ -59,12 +59,24 @@ def main():
         sample_conf = json.load(f)
 
     # 配置相关参数
-    save_path = sample_conf["online_image_dir"]  # 下载图片保存的地址
     remote_url = sample_conf["remote_url"]  # 网络验证码地址
+    save_path = sample_conf["online_image_dir"]  # 下载图片保存的地址
+    local_path = sample_conf["local_image_dir"]  # 保存的地址
+    api_path = sample_conf["api_image_dir"]  # api的地址
     image_suffix = sample_conf["image_suffix"]  # 文件后缀
-    rec_times = 1
-    recognize_captcha(remote_url, rec_times, save_path, image_suffix)
+    rec_times = 10
 
+    if not os.path.exists(save_path):
+        print("【警告】找不到目录{}，即将创建".format(save_path))
+        os.makedirs(save_path)
+    if not os.path.exists(local_path):
+        print("【警告】找不到目录{}，即将创建".format(local_path))
+        os.makedirs(local_path)
+    if not os.path.exists(api_path):
+        print("【警告】找不到目录{}，即将创建".format(api_path))
+        os.makedirs(api_path)
+
+    recognize_captcha(remote_url, rec_times, save_path, image_suffix)
 
 if __name__ == '__main__':
     main()
