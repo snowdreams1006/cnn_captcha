@@ -31,7 +31,7 @@ def verify(origin_dir, real_width, real_height, image_suffix,max_captcha):
     bad_img = []
 
     # 遍历所有图片进行验证
-    regex = r"\d{4}"
+    regex = r"[0123456789abcdefghijklmnopqrstuvwxyz]{4}"
     for index, img_name in enumerate(img_list):
         file_path = os.path.join(origin_dir, img_name)
         # 过滤图片不正确的后缀
@@ -44,6 +44,7 @@ def verify(origin_dir, real_width, real_height, image_suffix,max_captcha):
             bad_img.append((index, img_name, "图片标签异常"))
             continue
         prefix, posfix = img_name.split("_")
+        prefix = prefix.strip()
         if prefix == "" or len(prefix) != max_captcha or re.match(regex,prefix) == None or posfix == "":
             bad_img.append((index, img_name, "图片标签异常"))
             continue
@@ -113,6 +114,9 @@ def split(origin_dir, train_dir, test_dir, bad_imgs):
     print("测试集数量为：{}".format(len(test_list)))
     for file_name in test_list:
         src = os.path.join(origin_dir, file_name)
+        prefix, posfix = file_name.split("_")
+        prefix = prefix.strip()
+        file_name = prefix + '_' + posfix
         dst = os.path.join(test_dir, file_name)
         shutil.move(src, dst)
 
@@ -121,6 +125,9 @@ def split(origin_dir, train_dir, test_dir, bad_imgs):
     print("训练集数量为：{}".format(len(train_list)))
     for file_name in train_list:
         src = os.path.join(origin_dir, file_name)
+        prefix, posfix = file_name.split("_")
+        prefix = prefix.strip()
+        file_name = prefix + '_' + posfix
         dst = os.path.join(train_dir, file_name)
         shutil.move(src, dst)
 
